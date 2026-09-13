@@ -307,13 +307,6 @@ body {
   opacity: 0.35;
 }
 
-.space-number {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  text-align: center;
-}
-
 .track-option {
   flex: 1;
   font-family: var(--font-mono);

@@ -653,11 +653,6 @@ function renderTrack() {
       const cell = document.createElement('div');
       cell.className = 'track-cell' + (locked ? ' space-locked' : '');
 
-      const numEl = document.createElement('div');
-      numEl.className = 'space-number';
-      numEl.textContent = Object.keys(spaceDef.options).length > 1 ? `${space}${opt}` : `${space}`;
-      cell.appendChild(numEl);
-
       const btn = document.createElement('button');
       btn.className = 'track-option' + (state.usedOptions.has(`${space}-${opt}`) ? ' option-used' : '');
       btn.textContent = def.text;
