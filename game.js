@@ -650,14 +650,16 @@ function renderTrack() {
   el.innerHTML = '';
   ACTION_TRACK.forEach((spaceDef) => {
     const space = spaceDef.space;
-    const wrap = document.createElement('div');
     const locked = space > state.maxReach;
-    wrap.className = 'track-space' + (locked ? ' space-locked' : '');
-    const numEl = document.createElement('div');
-    numEl.className = 'space-number';
-    numEl.textContent = `Space ${space}`;
-    wrap.appendChild(numEl);
     Object.entries(spaceDef.options).forEach(([opt, def]) => {
+      const cell = document.createElement('div');
+      cell.className = 'track-cell' + (locked ? ' space-locked' : '');
+
+      const numEl = document.createElement('div');
+      numEl.className = 'space-number';
+      numEl.textContent = Object.keys(spaceDef.options).length > 1 ? `${space}${opt}` : `${space}`;
+      cell.appendChild(numEl);
+
       const btn = document.createElement('button');
       btn.className = 'track-option' + (state.usedOptions.has(`${space}-${opt}`) ? ' option-used' : '');
       btn.textContent = def.text;
@@ -665,9 +667,10 @@ function renderTrack() {
         (state.pendingBonusSpace === space || state.selectedPiece);
       btn.disabled = !canUse;
       btn.onclick = () => chooseTrackOption(space, opt);
-      wrap.appendChild(btn);
+      cell.appendChild(btn);
+
+      el.appendChild(cell);
     });
-    el.appendChild(wrap);
   });
 }
 

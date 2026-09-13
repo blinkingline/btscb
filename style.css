@@ -287,15 +287,19 @@ body {
   cursor: default;
 }
 
-/* Action track */
+/* Action track: one flat left-to-right row, one cell per action —
+   no stacking sub-options on top of each other within a space. */
 .track {
   display: flex;
   gap: 6px;
   margin-bottom: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
-.track-space {
-  flex: 1;
+.track-cell {
+  flex: 1 1 0;
+  min-width: 84px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -305,7 +309,7 @@ body {
   gap: 4px;
 }
 
-.track-space.space-locked {
+.track-cell.space-locked {
   opacity: 0.35;
 }
 
@@ -317,6 +321,7 @@ body {
 }
 
 .track-option {
+  flex: 1;
   font-family: var(--font-mono);
   font-size: 0.64rem;
   padding: 5px 5px;
@@ -500,12 +505,8 @@ body {
 }
 
 @media (max-width: 640px) {
-  .track {
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-  .track-space {
-    flex: 0 0 108px;
+  .track-cell {
+    flex: 0 0 84px;
   }
   .card,
   .friend-card {
