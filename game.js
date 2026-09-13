@@ -375,10 +375,24 @@ function presentChoice(options, callback) {
 function endMorning() {
   if (state.turnModifiers.skip_evening_night) {
     logMsg('Skip evening and night. Sleep comes easy, for once.');
-    startNextMorning();
+    state.phase = 'rest-skipped';
+    renderAll();
     return;
   }
   eveningPhase();
+}
+
+// Evening and Night resolve their bookkeeping immediately, but we pause
+// here with a "Continue" prompt so the player actually sees what happened
+// instead of being bounced straight back to the next Morning.
+function finishEvening() {
+  state.phase = 'evening-resolved';
+  renderAll();
+}
+
+function finishNight() {
+  state.phase = 'night-resolved';
+  renderAll();
 }
 
 function eveningPhase() {
@@ -401,18 +415,18 @@ function eveningPhase() {
   if (remaining > 0) {
     resolveEveningSacrifice(remaining);
   } else {
-    nightPhase();
+    finishEvening();
   }
 }
 
 function resolveEveningSacrifice(remaining) {
   const livingFriends = state.friendRow.filter((s) => s && !s.dead && s.faceUp);
   if (remaining <= 0) {
-    nightPhase();
+    finishEvening();
     return;
   }
   if (!livingFriends.length) {
-    loseAPiece(() => nightPhase());
+    loseAPiece(finishEvening);
     return;
   }
   state.phase = 'evening-sacrifice';
@@ -493,7 +507,7 @@ function nightPhase() {
     return;
   }
 
-  startNextMorning();
+  finishNight();
 }
 
 function startNextMorning() {
@@ -556,6 +570,32 @@ function renderAll() {
 
   const endBtn = document.getElementById('btn-end-morning');
   endBtn.hidden = state.phase !== 'actions';
+
+  renderRecap();
+}
+
+const RECAPS = {
+  'evening-resolved': { text: 'Evening has passed.', button: 'Continue to Night' },
+  'night-resolved': { text: 'Night has passed.', button: 'Continue to Morning' },
+  'rest-skipped': { text: 'You skip evening and night entirely.', button: 'Continue to Morning' },
+};
+
+function renderRecap() {
+  const panel = document.getElementById('recap-panel');
+  const recap = RECAPS[state.phase];
+  panel.hidden = !recap;
+  if (recap) {
+    document.getElementById('recap-text').textContent = recap.text;
+    document.getElementById('btn-continue').textContent = recap.button;
+  }
+}
+
+function continueFromRecap() {
+  if (state.phase === 'evening-resolved') {
+    nightPhase();
+  } else if (state.phase === 'night-resolved' || state.phase === 'rest-skipped') {
+    startNextMorning();
+  }
 }
 
 function renderResources() {
@@ -572,6 +612,9 @@ function renderPhaseIndicator() {
     'evening-sacrifice': 'Evening — sacrifice',
     'evening-lose-piece': 'Evening — loss',
     night: 'Night',
+    'evening-resolved': 'Evening',
+    'night-resolved': 'Night',
+    'rest-skipped': 'Evening — skipped',
   };
   document.getElementById('phase-indicator').textContent = labels[state.phase] || state.phase;
 }
@@ -704,4 +747,5 @@ document.getElementById('btn-restart').addEventListener('click', newGame);
 document.getElementById('btn-end-morning').addEventListener('click', () => {
   if (state.phase === 'actions') endMorning();
 });
+document.getElementById('btn-continue').addEventListener('click', continueFromRecap);
 renderAll();
