@@ -42,6 +42,11 @@ body {
   padding: 24px 16px;
 }
 
+#screen-game {
+  padding-top: 12px;
+  padding-bottom: 0;
+}
+
 /* Title / ending screens */
 .title-card {
   max-width: 560px;
@@ -121,15 +126,18 @@ body {
 }
 
 .hud {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 12px 16px;
+  padding: 8px 14px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .resources {
@@ -168,37 +176,36 @@ body {
 
 .board-row {
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 
 .row-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-dim);
-  margin: 0 0 8px 2px;
+  margin: 0 0 4px 2px;
   font-family: var(--font-mono);
 }
 
 .card-line {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 .card {
   flex: 0 0 auto;
-  width: 190px;
-  min-height: 220px;
+  width: 138px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 10px;
-  font-size: 0.82rem;
+  padding: 7px;
+  font-size: 0.72rem;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   cursor: pointer;
   transition: border-color 0.15s ease, transform 0.15s ease;
   position: relative;
@@ -224,7 +231,7 @@ body {
 }
 
 .card-id {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   color: var(--text-dim);
   font-family: var(--font-mono);
 }
@@ -233,21 +240,30 @@ body {
   flex: 1;
   font-style: italic;
   color: var(--text);
+  font-size: 0.76rem;
+  line-height: 1.3;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: help;
 }
 
 .card-effect {
-  font-size: 0.78rem;
+  font-size: 0.68rem;
   color: var(--text-dim);
   border-top: 1px dashed var(--border);
-  padding-top: 6px;
+  padding-top: 4px;
+  margin: 0;
 }
 
 .card-tag {
   align-self: flex-start;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 3px;
   font-family: var(--font-mono);
 }
@@ -274,8 +290,8 @@ body {
 /* Action track */
 .track {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .track-space {
@@ -283,10 +299,10 @@ body {
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 8px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .track-space.space-locked {
@@ -295,21 +311,22 @@ body {
 
 .space-number {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   color: var(--text-dim);
   text-align: center;
 }
 
 .track-option {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  padding: 8px 6px;
+  font-size: 0.64rem;
+  padding: 5px 5px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text);
   cursor: pointer;
   text-align: left;
+  line-height: 1.25;
 }
 
 .track-option:hover:not(:disabled) {
@@ -328,14 +345,14 @@ body {
 
 .piece-tray {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
 }
 
 .piece {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  padding: 8px 16px;
+  font-size: 0.76rem;
+  padding: 5px 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -357,7 +374,7 @@ body {
 
 /* Friends */
 .friend-card {
-  width: 190px;
+  width: 138px;
 }
 
 .friend-card.friend-dead {
@@ -366,33 +383,42 @@ body {
 
 .friend-blood {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   color: var(--blood-bright);
   font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+/* Sticky action bar: End Morning / Continue must always be reachable
+   without scrolling, whatever the board's height. */
+.controls,
+.recap-panel {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
 }
 
 .controls {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  padding: 10px 0;
 }
 
 .recap-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   text-align: center;
-  padding: 20px;
-  margin-bottom: 20px;
-  background: var(--bg-panel);
-  border: 1px solid var(--blood-bright);
-  border-radius: 6px;
+  padding: 12px;
+  border-top: 1px solid var(--blood-bright);
 }
 
 .recap-panel p {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--text);
   margin: 0;
 }
@@ -402,8 +428,10 @@ body {
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 12px 16px;
-  max-height: 220px;
+  padding: 8px 14px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  max-height: 130px;
   overflow-y: auto;
 }
 
@@ -412,12 +440,12 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
 }
 
 #log-list li {
-  padding: 3px 0;
+  padding: 2px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -473,9 +501,14 @@ body {
 
 @media (max-width: 640px) {
   .track {
-    flex-wrap: wrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
   .track-space {
-    flex: 1 1 45%;
+    flex: 0 0 108px;
+  }
+  .card,
+  .friend-card {
+    width: 116px;
   }
 }

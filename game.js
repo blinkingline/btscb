@@ -630,7 +630,7 @@ function renderHeartLine() {
       div.innerHTML = `
         <span class="card-tag tag-she">Her</span>
         <span class="card-id">${card.id}</span>
-        <p class="card-flavor">${card.sheText}</p>
+        <p class="card-flavor" title="${card.sheText}">${card.sheText}</p>
         <p class="card-effect">${card.sheBenefitText || 'Gain ' + describeAmount(card.sheBenefit)}</p>`;
     } else {
       div.innerHTML = `
@@ -720,7 +720,7 @@ function renderFriendLine() {
     div.className = 'card friend-card' + (slot.committedBy ? ' friend-committed' : '') + (committable || sacrificeable ? ' friend-committable' : '');
     div.innerHTML = `
       <span class="card-id">${slot.card.id}</span>
-      <p class="card-flavor">${slot.card.text}</p>
+      <p class="card-flavor" title="${slot.card.text}">${slot.card.text}</p>
       <p class="friend-blood">Blood if lost: ${slot.card.blood} · Guilt: ${slot.card.guilt}</p>
       <p class="card-effect">${slot.card.action.text}</p>`;
     if (committable) div.onclick = () => commitPieceToFriend(i);
