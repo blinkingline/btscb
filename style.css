@@ -11,6 +11,10 @@
   --lock: #6b6a3f;
   --thing: #4a1258;
   --shadow: rgba(0, 0, 0, 0.6);
+
+  --font-display: "Cormorant", "Iowan Old Style", serif;
+  --font-body: "Crimson Pro", Georgia, serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
 }
 
 * {
@@ -26,7 +30,7 @@ body {
   min-height: 100vh;
   background: radial-gradient(ellipse at top, #16110f 0%, var(--bg) 65%);
   color: var(--text);
-  font-family: "Georgia", "Iowan Old Style", serif;
+  font-family: var(--font-body);
   line-height: 1.5;
 }
 
@@ -51,17 +55,23 @@ body {
 }
 
 .title-card h1 {
-  font-size: 2.2rem;
-  letter-spacing: 0.02em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 3rem;
+  letter-spacing: 0.01em;
   color: var(--blood-bright);
   text-shadow: 0 0 24px rgba(181, 24, 47, 0.35);
   margin-bottom: 8px;
+  text-wrap: balance;
 }
 
 .tagline {
-  color: var(--text-dim);
+  font-family: var(--font-body);
   font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-dim);
   margin-bottom: 24px;
+  text-wrap: balance;
 }
 
 .credit {
@@ -71,8 +81,9 @@ body {
 }
 
 .btn {
-  font-family: inherit;
-  font-size: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
   padding: 10px 28px;
   border-radius: 3px;
   border: 1px solid var(--border);
@@ -130,8 +141,10 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--font-mono);
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .res-icon {
@@ -143,7 +156,8 @@ body {
 .resource-lock { color: var(--lock); }
 
 .phase-indicator {
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -163,7 +177,7 @@ body {
   letter-spacing: 0.12em;
   color: var(--text-dim);
   margin: 0 0 8px 2px;
-  font-family: sans-serif;
+  font-family: var(--font-mono);
 }
 
 .card-line {
@@ -212,7 +226,7 @@ body {
 .card-id {
   font-size: 0.7rem;
   color: var(--text-dim);
-  font-family: sans-serif;
+  font-family: var(--font-mono);
 }
 
 .card-flavor {
@@ -235,7 +249,7 @@ body {
   letter-spacing: 0.08em;
   padding: 2px 6px;
   border-radius: 3px;
-  font-family: sans-serif;
+  font-family: var(--font-mono);
 }
 
 .tag-she {
@@ -280,15 +294,15 @@ body {
 }
 
 .space-number {
-  font-family: sans-serif;
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-dim);
   text-align: center;
 }
 
 .track-option {
-  font-family: inherit;
-  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   padding: 8px 6px;
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -319,7 +333,7 @@ body {
 }
 
 .piece {
-  font-family: sans-serif;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   padding: 8px 16px;
   border-radius: 999px;
@@ -351,8 +365,10 @@ body {
 }
 
 .friend-blood {
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   color: var(--blood-bright);
+  font-variant-numeric: tabular-nums;
 }
 
 .controls {
@@ -375,7 +391,8 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
   color: var(--text-dim);
 }
 
@@ -417,7 +434,7 @@ body {
 }
 
 .hint {
-  font-family: sans-serif;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--text-dim);
   text-align: center;
