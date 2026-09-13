@@ -629,13 +629,11 @@ function renderHeartLine() {
     if (card.side === 'she') {
       div.innerHTML = `
         <span class="card-tag tag-she">Her</span>
-        <span class="card-id">${card.id}</span>
         <p class="card-flavor" title="${card.sheText}">${card.sheText}</p>
         <p class="card-effect">${card.sheBenefitText || 'Gain ' + describeAmount(card.sheBenefit)}</p>`;
     } else {
       div.innerHTML = `
         <span class="card-tag tag-thing">Thing</span>
-        <span class="card-id">${card.id}</span>
         <p class="card-flavor">Something wears her face.</p>
         <p class="card-effect">Cost to face it: ${describeAmount(card.thingCost)}<br>
           Feeds on ${card.thingFood} blood each evening.${card.thingIcon ? `<br>Watches with ${card.thingIcon} eyes each night.` : ''}</p>`;
@@ -722,7 +720,6 @@ function renderFriendLine() {
     const sacrificeable = state.phase === 'evening-sacrifice';
     div.className = 'card friend-card' + (slot.committedBy ? ' friend-committed' : '') + (committable || sacrificeable ? ' friend-committable' : '');
     div.innerHTML = `
-      <span class="card-id">${slot.card.id}</span>
       <p class="card-flavor" title="${slot.card.text}">${slot.card.text}</p>
       <p class="friend-blood">Blood if lost: ${slot.card.blood} · Guilt: ${slot.card.guilt}</p>
       <p class="card-effect">${slot.card.action.text}</p>`;

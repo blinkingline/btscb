@@ -230,12 +230,6 @@ body {
   background: linear-gradient(160deg, var(--bg-card), var(--thing) 260%);
 }
 
-.card-id {
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  font-family: var(--font-mono);
-}
-
 .card-flavor {
   flex: 1;
   font-style: italic;
