@@ -582,6 +582,7 @@ function renderAll() {
   if (state.phase === 'title') return;
 
   renderResources();
+  renderForecast();
   renderPhaseIndicator();
   renderHeartLine();
   renderTrack();
@@ -623,6 +624,38 @@ function renderResources() {
   document.getElementById('res-blood').textContent = state.resources.blood;
   document.getElementById('res-knife').textContent = state.resources.knife;
   document.getElementById('res-lock').textContent = state.resources.lock + committedLockBonus();
+}
+
+// What tonight will actually cost, computed straight from current state
+// (thing-side cards demand blood and watch with locked-eyes; every friend
+// ever sacrificed adds permanent guilt paid in knives) so it can be shown
+// live instead of only after the fact in the log.
+function computeForecast() {
+  const thingCards = state.heartLine.filter((c) => c.side === 'thing');
+  const blood = thingCards.reduce((sum, c) => sum + (c.thingFood || 0), 0);
+  const lock = thingCards.reduce((sum, c) => sum + (c.thingIcon || 0), 0);
+  const knife = state.spentFriends
+    .map((id) => FRIEND_CARDS.find((f) => f.id === id))
+    .reduce((sum, f) => sum + (f ? f.guilt : 0), 0);
+  return { blood, knife, lock };
+}
+
+function renderForecast() {
+  const el = document.getElementById('forecast');
+  if (state.phase === 'ended') { el.innerHTML = ''; return; }
+  const need = computeForecast();
+  if (!need.blood && !need.knife && !need.lock) { el.innerHTML = ''; return; }
+  const lockAvailable = state.resources.lock + committedLockBonus();
+  const short = {
+    blood: state.resources.blood < need.blood,
+    knife: state.resources.knife < need.knife,
+    lock: lockAvailable < need.lock,
+  };
+  el.innerHTML = `
+    <span class="forecast-label">Tonight costs</span>
+    <span class="forecast-item${short.blood ? ' forecast-short' : ''}"><span class="amt-icon">${RESOURCE_ICONS.blood}</span>${need.blood}</span>
+    <span class="forecast-item${short.knife ? ' forecast-short' : ''}"><span class="amt-icon">${RESOURCE_ICONS.knife}</span>${need.knife}</span>
+    <span class="forecast-item${short.lock ? ' forecast-short' : ''}"><span class="amt-icon">${RESOURCE_ICONS.lock}</span>${need.lock}</span>`;
 }
 
 function renderPhaseIndicator() {

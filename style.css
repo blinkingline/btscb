@@ -130,14 +130,58 @@ body {
   top: 0;
   z-index: 5;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
   padding: 8px 14px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 4px;
   margin-bottom: 12px;
+}
+
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Live "what tonight will cost" summary, always visible in the sticky
+   HUD so the player doesn't have to scroll to the log to plan ahead. */
+.forecast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+
+.forecast:empty {
+  display: none;
+}
+
+.forecast-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+}
+
+.forecast-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.forecast-item.forecast-short {
+  color: var(--blood-bright);
+  font-weight: 600;
 }
 
 .resources {
