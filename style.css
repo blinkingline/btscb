@@ -465,38 +465,17 @@ body {
   margin: 0;
 }
 
-/* Sticky action bar: End Morning / Continue must always be reachable
-   without scrolling, whatever the board's height. */
-.controls,
-.recap-panel {
+/* Sticky action bar: End Morning must always be reachable without
+   scrolling, whatever the board's height. */
+.controls {
   position: sticky;
   bottom: 0;
   z-index: 5;
   background: var(--bg-panel);
   border-top: 1px solid var(--border);
-}
-
-.controls {
   display: flex;
   justify-content: center;
   padding: 10px 0;
-}
-
-.recap-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  padding: 12px;
-  border-top: 1px solid var(--blood-bright);
-}
-
-.recap-panel p {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--text);
-  margin: 0;
 }
 
 .log-panel {
@@ -563,6 +542,32 @@ body {
   color: var(--text-dim);
   text-align: center;
   margin: -8px 0 16px;
+}
+
+/* End-of-Morning / end-of-Night recap: a real popup moment rather than
+   a quiet bar at the bottom of the page. */
+.recap-modal-box {
+  max-width: 400px;
+  padding: 24px;
+}
+
+.recap-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--blood-bright);
+  margin: 0 0 12px;
+}
+
+.recap-detail {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin: 0 0 18px;
+}
+
+.recap-detail .amt {
+  font-family: var(--font-mono);
+  font-weight: 600;
 }
 
 .friend-card.friend-committable {

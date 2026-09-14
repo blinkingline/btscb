@@ -433,6 +433,8 @@ function eveningPhase() {
   remaining -= spendable;
   logMsg(`Evening: the thing demands ${demand} blood. You give ${spendable}.`);
 
+  state.eveningSummary = { demand, given: spendable, sacrificedFriends: [], pieceLost: null };
+
   if (remaining > 0) {
     resolveEveningSacrifice(remaining);
   } else {
@@ -463,6 +465,7 @@ function sacrificeFriend(slotIndex) {
   slot.dead = true;
   state.spentFriends.push(slot.card.id);
   state.eveningRemaining -= slot.card.blood;
+  state.eveningSummary.sacrificedFriends.push(slot.card.id);
   logMsg(`${slot.card.id} is given to it. You will carry this.`);
   resolveEveningSacrifice(state.eveningRemaining);
 }
@@ -477,6 +480,7 @@ function loseAPiece(then) {
   }
   if (available.length === 1) {
     state.pieces[available[0]].lost = true;
+    state.eveningSummary.pieceLost = available[0];
     logMsg(`You cannot protect yourself. You lose your ${available[0]}.`);
     then();
     return;
@@ -491,6 +495,7 @@ function choosePieceLoss(name) {
   if (state.phase !== 'evening-lose-piece') return;
   if (name === 'heart' || state.pieces[name].lost) return;
   state.pieces[name].lost = true;
+  state.eveningSummary.pieceLost = name;
   logMsg(`You lose your ${name}.`);
   const cb = state.pieceLossCallback;
   state.pieceLossCallback = null;
@@ -522,6 +527,8 @@ function nightPhase() {
     triggerEnding('you-killed');
     return;
   }
+
+  state.nightSummary = { guilt, lockNeeded: thingIcons };
 
   if (state.heartLine.every((c) => c.side === 'thing') && state.heartDeck.length === 0) {
     triggerEnding('nothing-left-of-her');
@@ -596,20 +603,49 @@ function renderAll() {
   renderRecap();
 }
 
-const RECAPS = {
-  'evening-resolved': { text: 'Evening has passed.', button: 'Continue to Night' },
-  'night-resolved': { text: 'Night has passed.', button: 'Continue to Morning' },
-  'rest-skipped': { text: 'You skip evening and night entirely.', button: 'Continue to Morning' },
+const RECAP_BUTTONS = {
+  'evening-resolved': 'Continue to Night',
+  'night-resolved': 'Continue to Morning',
+  'rest-skipped': 'Continue to Morning',
 };
 
-function renderRecap() {
-  const panel = document.getElementById('recap-panel');
-  const recap = RECAPS[state.phase];
-  panel.hidden = !recap;
-  if (recap) {
-    document.getElementById('recap-text').textContent = recap.text;
-    document.getElementById('btn-continue').textContent = recap.button;
+function eveningRecapHtml() {
+  const s = state.eveningSummary || {};
+  const lines = [`The thing demanded ${amountIcons({ blood: s.demand || 0 }, '')}. You gave it ${amountIcons({ blood: s.given || 0 }, '')}.`];
+  if (s.sacrificedFriends && s.sacrificedFriends.length) {
+    lines.push(`You gave it ${s.sacrificedFriends.join(', ')}, to make up the rest.`);
   }
+  if (s.pieceLost) {
+    lines.push(`With no one left to give, you lost your ${s.pieceLost}.`);
+  }
+  return lines.join('<br>');
+}
+
+function nightRecapHtml() {
+  const s = state.nightSummary || {};
+  return `Guilt weighed ${amountIcons({ knife: s.guilt || 0 }, '')} on you, paid in full.<br>` +
+    `It watched with ${s.lockNeeded || 0} eyes; ${amountIcons({ lock: s.lockNeeded || 0 }, '')} held it back.`;
+}
+
+function renderRecap() {
+  const modal = document.getElementById('recap-modal');
+  const isRecap = state.phase === 'evening-resolved' || state.phase === 'night-resolved' || state.phase === 'rest-skipped';
+  modal.hidden = !isRecap;
+  if (!isRecap) return;
+
+  const titleEl = document.getElementById('recap-title');
+  const textEl = document.getElementById('recap-text');
+  if (state.phase === 'evening-resolved') {
+    titleEl.textContent = 'Evening Falls';
+    textEl.innerHTML = eveningRecapHtml();
+  } else if (state.phase === 'night-resolved') {
+    titleEl.textContent = 'Night Passes';
+    textEl.innerHTML = nightRecapHtml();
+  } else {
+    titleEl.textContent = 'A Quiet Night';
+    textEl.textContent = 'You skip evening and night entirely. Sleep comes easy, for once.';
+  }
+  document.getElementById('btn-continue').textContent = RECAP_BUTTONS[state.phase];
 }
 
 function continueFromRecap() {
