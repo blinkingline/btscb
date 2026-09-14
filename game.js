@@ -220,6 +220,27 @@ function describeAmount(amount) {
     .join(', ') || 'nothing';
 }
 
+const RESOURCE_ICONS = { blood: '&#129656;', knife: '&#128298;', lock: '&#128274;' };
+const PIECE_ICONS = { eyes: '&#128065;&#65039;', hand: '&#9995;', foot: '&#129462;', heart: '&#10084;&#65039;' };
+
+// Render an amount ({blood:1, knife:2, ...}) as icon+number spans, e.g.
+// for the action track and choice prompts, in place of a resource name.
+function amountIcons(amount, sign) {
+  if (!amount) return '';
+  return Object.entries(amount)
+    .filter(([k]) => RESOURCE_ICONS[k])
+    .map(([k, v]) => `<span class="amt amt-${k}"><span class="amt-icon">${RESOURCE_ICONS[k]}</span>${sign}${v}</span>`)
+    .join('');
+}
+
+function formatEffectIcons(def) {
+  const parts = [];
+  if (def.spend) parts.push(amountIcons(def.spend, '−'));
+  if (def.gain) parts.push(amountIcons(def.gain, '+'));
+  if (def.choice) parts.push(def.choice.map((c) => amountIcons(c, '+')).join('<span class="opt-or">or</span>'));
+  return parts.join('') || def.text;
+}
+
 function applyEffect(def) {
   return new Promise((resolve) => {
     if (def.choice) {
@@ -360,7 +381,7 @@ function presentChoice(options, callback) {
   options.forEach((opt) => {
     const btn = document.createElement('button');
     btn.className = 'btn btn-secondary';
-    btn.textContent = describeAmount(opt);
+    btn.innerHTML = amountIcons(opt, '+') || describeAmount(opt);
     btn.onclick = () => {
       modal.hidden = true;
       callback(opt);
@@ -630,13 +651,13 @@ function renderHeartLine() {
       div.innerHTML = `
         <span class="card-tag tag-she">Her</span>
         <p class="card-flavor" title="${card.sheText}">${card.sheText}</p>
-        <p class="card-effect">${card.sheBenefitText || 'Gain ' + describeAmount(card.sheBenefit)}</p>`;
+        <p class="card-effect">${card.sheBenefitText || amountIcons(card.sheBenefit, '+')}</p>`;
     } else {
       div.innerHTML = `
         <span class="card-tag tag-thing">Thing</span>
         <p class="card-flavor">Something wears her face.</p>
-        <p class="card-effect">Cost to face it: ${describeAmount(card.thingCost)}<br>
-          Feeds on ${card.thingFood} blood each evening.${card.thingIcon ? `<br>Watches with ${card.thingIcon} eyes each night.` : ''}</p>`;
+        <p class="card-effect">Cost to face it: ${amountIcons(card.thingCost, '−')}<br>
+          Feeds on <span class="amt amt-blood"><span class="amt-icon">${RESOURCE_ICONS.blood}</span>${card.thingFood}</span> each evening.${card.thingIcon ? `<br>Watches with ${card.thingIcon} <span class="amt-icon">${PIECE_ICONS.eyes}</span> each night.` : ''}</p>`;
     }
     if (choosable) div.onclick = () => chooseHeartCard(i);
     el.appendChild(div);
@@ -649,21 +670,27 @@ function renderTrack() {
   ACTION_TRACK.forEach((spaceDef) => {
     const space = spaceDef.space;
     const locked = space > state.maxReach;
-    Object.entries(spaceDef.options).forEach(([opt, def]) => {
-      const cell = document.createElement('div');
-      cell.className = 'track-cell' + (locked ? ' space-locked' : '');
+    const cell = document.createElement('div');
+    cell.className = 'track-cell' + (locked ? ' space-locked' : '');
 
+    const label = document.createElement('div');
+    label.className = 'track-space-label';
+    label.textContent = space;
+    cell.appendChild(label);
+
+    Object.entries(spaceDef.options).forEach(([opt, def]) => {
       const btn = document.createElement('button');
       btn.className = 'track-option' + (state.usedOptions.has(`${space}-${opt}`) ? ' option-used' : '');
-      btn.textContent = def.text;
+      btn.innerHTML = formatEffectIcons(def);
+      btn.title = def.text;
       const canUse = state.phase === 'actions' && optionAvailable(space, opt) &&
         (state.pendingBonusSpace === space || state.selectedPiece);
       btn.disabled = !canUse;
       btn.onclick = () => chooseTrackOption(space, opt);
       cell.appendChild(btn);
-
-      el.appendChild(cell);
     });
+
+    el.appendChild(cell);
   });
 }
 
@@ -675,7 +702,7 @@ function renderPieceTray() {
     const p = state.pieces[name];
     const btn = document.createElement('button');
     btn.className = 'piece' + (state.selectedPiece === name ? ' piece-selected' : '') + ((p.used || p.lost) ? ' piece-used' : '');
-    btn.textContent = p.lost ? `${name} (lost)` : name;
+    btn.innerHTML = `<span class="piece-icon">${PIECE_ICONS[name]}</span>${capitalize(name)}${p.lost ? ' (lost)' : ''}`;
     if (losing) {
       btn.disabled = p.lost || name === 'heart';
       btn.onclick = () => choosePieceLoss(name);
@@ -718,8 +745,8 @@ function renderFriendLine() {
     div.className = 'card friend-card' + (slot.committedBy ? ' friend-committed' : '') + (committable || sacrificeable ? ' friend-committable' : '');
     div.innerHTML = `
       <p class="card-flavor" title="${slot.card.text}">${slot.card.text}</p>
-      <p class="friend-blood">Blood if lost: ${slot.card.blood}</p>
-      <p class="card-effect">${slot.card.action.text}</p>`;
+      <p class="friend-blood">If lost: <span class="amt amt-blood"><span class="amt-icon">${RESOURCE_ICONS.blood}</span>${slot.card.blood}</span></p>
+      <p class="card-effect">${!slot.card.action.special && (slot.card.action.gain || slot.card.action.choice) ? formatEffectIcons(slot.card.action) : slot.card.action.text}</p>`;
     if (committable) div.onclick = () => commitPieceToFriend(i);
     if (sacrificeable) div.onclick = () => sacrificeFriend(i);
     el.appendChild(div);

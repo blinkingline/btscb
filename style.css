@@ -192,6 +192,7 @@ body {
   display: flex;
   gap: 8px;
   overflow-x: auto;
+  padding-top: 6px;
   padding-bottom: 4px;
 }
 
@@ -281,23 +282,26 @@ body {
   cursor: default;
 }
 
-/* Action track: one flat left-to-right row, one cell per action —
-   no stacking sub-options on top of each other within a space. */
+/* Action track: one tile per space (matching the width/gap of the card
+   rows above and below it), so space N sits in the same column as the
+   Nth Her/Thing card, as it does on the physical board. Each tile holds
+   its own a/b option buttons stacked inside. */
 .track {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 6px;
   overflow-x: auto;
+  padding-top: 6px;
   padding-bottom: 4px;
 }
 
 .track-cell {
-  flex: 1 1 0;
-  min-width: 84px;
+  flex: 0 0 138px;
+  width: 138px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 5px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -307,18 +311,54 @@ body {
   opacity: 0.35;
 }
 
+.track-space-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--text-dim);
+}
+
 .track-option {
   flex: 1;
   font-family: var(--font-mono);
-  font-size: 0.64rem;
-  padding: 5px 5px;
+  font-size: 0.78rem;
+  padding: 6px 5px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text);
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   line-height: 1.25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.amt {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.amt-icon {
+  font-size: 0.9em;
+}
+
+.opt-or {
+  font-size: 0.7em;
+  font-style: italic;
+  color: var(--text-dim);
+  margin: 0 1px;
+}
+
+.piece-icon {
+  font-size: 1.05em;
+  margin-right: 4px;
 }
 
 .track-option:hover:not(:disabled) {
@@ -493,7 +533,8 @@ body {
 
 @media (max-width: 640px) {
   .track-cell {
-    flex: 0 0 84px;
+    flex: 0 0 116px;
+    width: 116px;
   }
   .card,
   .friend-card {
