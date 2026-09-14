@@ -700,7 +700,9 @@ function renderFriendLine() {
     }
     if (slot.dead) {
       div.className = 'card friend-card friend-dead';
-      div.innerHTML = `<span class="card-id">${slot.card.id}</span><p class="card-flavor">Given to it.</p>`;
+      div.innerHTML = `
+        <p class="card-flavor">Given to it.</p>
+        <p class="friend-blood">Guilt: ${slot.card.guilt}</p>`;
       el.appendChild(div);
       return;
     }
@@ -716,7 +718,7 @@ function renderFriendLine() {
     div.className = 'card friend-card' + (slot.committedBy ? ' friend-committed' : '') + (committable || sacrificeable ? ' friend-committable' : '');
     div.innerHTML = `
       <p class="card-flavor" title="${slot.card.text}">${slot.card.text}</p>
-      <p class="friend-blood">Blood if lost: ${slot.card.blood} · Guilt: ${slot.card.guilt}</p>
+      <p class="friend-blood">Blood if lost: ${slot.card.blood}</p>
       <p class="card-effect">${slot.card.action.text}</p>`;
     if (committable) div.onclick = () => commitPieceToFriend(i);
     if (sacrificeable) div.onclick = () => sacrificeFriend(i);
